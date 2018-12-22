@@ -5,14 +5,17 @@ output: html_notebook
 
 
 
-```{r}
-setwd('./')
-haberman <- read.table('haberman.data',sep=',',col.names = c('age','yearOfOperation', 'nodes', "survivalStatus"))
 
+1. Title: Haberman's Survival Data
 
-```
+   The dataset contains cases from a study that was conducted between
+   1958 and 1970 at the University of Chicago's Billings Hospital on
+   the survival of patients who had undergone surgery for breast
+   cancer.
 
+5. Number of Instances: 306
 
+6. Number of Attributes: 4 (including the class attribute)
 
 7. Attribute Information:
    1. Age of patient at time of operation (numerical)
@@ -23,3 +26,69 @@ haberman <- read.table('haberman.data',sep=',',col.names = c('age','yearOfOperat
          2 = the patient died within 5 year
 
 8. Missing Attribute Values: None
+
+
+```{r}
+setwd('./')
+haberman <- read.table('haberman.data',sep=',',col.names = c('age','yearOfOperation', 'nodes', "survivalStatus"))
+
+head(haberman)
+```
+
+
+
+```{r}
+
+#all data
+summary(haberman)
+
+#Survived
+summary(haberman[haberman$survivalStatus == 1,])
+#Died
+summary(haberman[haberman$survivalStatus == 2,])
+
+
+```
+
+
+
+
+```{r}
+
+#Present all four grapths in the same Layout matirx
+hist(haberman$age)
+hist(haberman$nodes)
+hist(haberman$yearOfOperation)
+pie(table(haberman$survivalStatus))
+
+```
+
+
+
+
+```{r}
+#no clear linear correlation
+pairs(haberman,col=haberman$survivalStatus)
+
+```
+
+
+
+```{r}
+#Correlation analysis
+cor(haberman)
+```
+
+
+
+
+```{r}
+
+#PCA analysis
+
+install.packages('FactoMineR', dependencies = TRUE)
+library('FactoMineR')
+result<-PCA(haberman)
+summary(result)
+```
+
