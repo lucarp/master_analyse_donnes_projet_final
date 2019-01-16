@@ -1,31 +1,30 @@
 ---
-title: "R Notebook"
+title: "Projet Final d'Analyse de Donées"
 output: html_notebook
 ---
 
-
-
+# Analyse du jeu de donées: Haberman's Survival
 
 1. Title: Haberman's Survival Data
-
-   The dataset contains cases from a study that was conducted between
-   1958 and 1970 at the University of Chicago's Billings Hospital on
-   the survival of patients who had undergone surgery for breast
-   cancer.
-
-5. Number of Instances: 306
-
-6. Number of Attributes: 4 (including the class attribute)
-
-7. Attribute Information:
-   1. Age of patient at time of operation (numerical)
-   2. Patient's year of operation (year - 1900, numerical)
-   3. Number of positive axillary nodes detected (numerical)
-   4. Survival status (class attribute)
-         1 = the patient survived 5 years or longer
-         2 = the patient died within 5 year
-
-8. Missing Attribute Values: None
+  
+     The dataset contains cases from a study that was conducted between
+     1958 and 1970 at the University of Chicago's Billings Hospital on
+     the survival of patients who had undergone surgery for breast
+     cancer.
+  
+  5. Number of Instances: 306
+  
+  6. Number of Attributes: 4 (including the class attribute)
+  
+  7. Attribute Information:
+     1. Age of patient at time of operation (numerical)
+     2. Patient's year of operation (year - 1900, numerical)
+     3. Number of positive axillary nodes detected (numerical)
+     4. Survival status (class attribute)
+           1 = the patient survived 5 years or longer
+           2 = the patient died within 5 year
+  
+  8. Missing Attribute Values: None
 
 
 ```{r}
@@ -77,6 +76,8 @@ pairs(haberman,col=haberman$survivalStatus)
 ```{r}
 #Correlation analysis
 cor(haberman)
+
+oneway.test(lhs,haberman)
 ```
 
 
@@ -88,6 +89,10 @@ cor(haberman)
 
 install.packages('FactoMineR', dependencies = TRUE)
 library('FactoMineR')
+
+```
+
+```{r}
 result<-PCA(haberman)
 summary(result)
 ```
