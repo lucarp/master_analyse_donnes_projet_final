@@ -5,27 +5,27 @@ output: html_notebook
 
 # Analyse du jeu de donées: Haberman's Survival
 
+## Introduction
+
 1. Title: Haberman's Survival Data
   
-     The dataset contains cases from a study that was conducted between
-     1958 and 1970 at the University of Chicago's Billings Hospital on
-     the survival of patients who had undergone surgery for breast
-     cancer.
+The dataset contains cases from a study that was conducted between 1958 and 1970 at the University of Chicago's Billings Hospital on the survival of patients who had undergone surgery for breast cancer.
   
-  5. Number of Instances: 306
+5. Number of Instances: 306
   
-  6. Number of Attributes: 4 (including the class attribute)
+6. Number of Attributes: 4 (including the class attribute)
   
-  7. Attribute Information:
-     1. Age of patient at time of operation (numerical)
-     2. Patient's year of operation (year - 1900, numerical)
-     3. Number of positive axillary nodes detected (numerical)
-     4. Survival status (class attribute)
-           1 = the patient survived 5 years or longer
-           2 = the patient died within 5 year
+7. Attribute Information:
+    1. Age of patient at time of operation (numerical)
+    2. Patient's year of operation (year - 1900, numerical)
+    3. Number of positive axillary nodes detected (numerical)
+    4. Survival status (class attribute)
+          1 = the patient survived 5 years or longer
+          2 = the patient died within 5 year
   
   8. Missing Attribute Values: None
 
+Les observations:
 
 ```{r}
 setwd('./')
@@ -34,71 +34,64 @@ head(haberman)
 ```
 
 
+## Les variables
 
-```{r}
-
-#all data
-summary(haberman)
-
-#Survived
-summary(haberman[haberman$survivalStatus == 1,])
-#Died
-summary(haberman[haberman$survivalStatus == 2,])
-
-
-```
-
-
+- La loi de chaque variable
+- Valeurs manquantes?
+- Valeurs aberrantes?
 
 
 ```{r}
-
-#Present all four grapths in the same Layout matirx
-hist(haberman$age)
-hist(haberman$nodes)
-hist(haberman$yearOfOperation)
-pie(table(haberman$survivalStatus))
-
-
-plot(table(haberman$yearOfOperation,haberman$survivalStatus))
-
-
 par(mfrow=c(2,2))
-hist(haberman$age[haberman$survivalStatus==1])
-hist(haberman$age[haberman$survivalStatus==2])
-plot(haberman$nodes[haberman$survivalStatus==1]~haberman$age[haberman$survivalStatus==1],type="p")
-plot(haberman$nodes[haberman$survivalStatus==2]~haberman$age[haberman$survivalStatus==2],type="p")
-```
-
-Supprimer aberrantes
-```{r}
-haberman<-haberman[haberman$nodes<40,]
-
+hist(haberman$age)
+hist(haberman$yearOfOperation)
+hist(haberman$nodes)
+hist(haberman$survivalStatus,nclass=2)
 ```
 
 
-Nuveau summary
-```{r}
-#all data
-summary(haberman)
+### Suprimer les Aberrantes
 
-#Survived
-summary(haberman[haberman$survivalStatus == 1,])
-#Died
-summary(haberman[haberman$survivalStatus == 2,])
-```
+La ligne rouge défine ce qu'on a consideré la frontière pour les valeurs aberrantes.
 
-
-Boxplot par survival status
 ```{r}
 
 boxplot(haberman$nodes~haberman$survivalStatus)
+abline(h=30,col="red")
+
+haberman<-haberman[haberman$nodes>30,]
 
 ```
 
 
+## Univariate statistics
 
-Correlation
+### All data
+```{r}
+
+#all data
+summary(haberman)
+```
+
+### Filtered by survived
+```{r}
+
+#Survived
+summary(haberman[haberman$survivalStatus == 1,])
+
+```
+
+### Filtered by those who died
+```{r}
+
+#Died
+summary(haberman[haberman$survivalStatus == 2,])
+
+
+```
+
+
+## Correlation
 ```{r}
 
 #no strong linear correlation
@@ -107,14 +100,36 @@ cor(haberman)
 ```
 
 
+## Relation Year vs survival Status
+```{r}
+plot(table(haberman$yearOfOperation,haberman$survivalStatus))
+```
+
+## Relation age et survivalStatus
+```{r}
+layout(matrix(c(1,2),ncol=2))
+hist(haberman$age[haberman$survivalStatus==1],main = "TEste")
+hist(haberman$age[haberman$survivalStatus==2],main = "Teste")
+
+```
+
 
 ```{r}
-#Correlation analysis
-summary(lm(haberman$age~haberman$nodes))
+layout(matrix(c(1,2),ncol=2))
+hist(haberman$nodes[haberman$survivalStatus==1],main = "TEste")
+hist(haberman$nodes[haberman$survivalStatus==2],main = "Teste")
 ```
 
 
 
+#Regressio Linéaire
+```{r}
+
+summary(lm(haberman$age~haberman$nodes))
+```
+
+
+# PCA
 
 ```{r}
 
@@ -126,9 +141,11 @@ library('FactoMineR')
 ```
 
 ```{r}
-result<-PCA(haberman,quali.sup = 4)
-summary(result)
+result<-PCA(haberman, scale.unit = TRUE, quali.sup = c(2,4))
+#summary(result)
+```
 
-plot.PCA(result,axes = c(2,3), habillage=4)
+```{r}
+plot.PCA(result,axes = c(1,2), habillage = 4)
 ```
 
