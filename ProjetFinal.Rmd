@@ -30,7 +30,6 @@ output: html_notebook
 ```{r}
 setwd('./')
 haberman <- read.table('haberman.data',sep=',',col.names = c('age','yearOfOperation', 'nodes', "survivalStatus"))
-
 head(haberman)
 ```
 
@@ -60,14 +59,46 @@ hist(haberman$nodes)
 hist(haberman$yearOfOperation)
 pie(table(haberman$survivalStatus))
 
+
+plot(table(haberman$yearOfOperation,haberman$survivalStatus))
+
+par(mfrow=c(1,2))
+hist(table(haberman$age,haberman$survivalStatus)[,1])
+hist(table(haberman$age,haberman$survivalStatus)[,2])
+```
+
+Supprimer aberrantes
+```{r}
+haberman<-haberman[haberman$nodes<40,]
+
 ```
 
 
 
+```{r}
+#all data
+summary(haberman)
+
+#Survived
+summary(haberman[haberman$survivalStatus == 1,])
+#Died
+summary(haberman[haberman$survivalStatus == 2,])
+```
+
 
 ```{r}
-#no clear linear correlation
-pairs(haberman,col=haberman$survivalStatus)
+
+boxplot(haberman$nodes~haberman$survivalStatus)
+
+```
+
+
+
+Correlation
+```{r}
+
+#no strong linear correlation
+cor(haberman)
 
 ```
 
@@ -75,9 +106,7 @@ pairs(haberman,col=haberman$survivalStatus)
 
 ```{r}
 #Correlation analysis
-cor(haberman)
-
-oneway.test(lhs,haberman)
+summary(lm(haberman$age~haberman$nodes))
 ```
 
 
