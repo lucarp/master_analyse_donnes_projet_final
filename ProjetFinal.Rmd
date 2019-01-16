@@ -62,9 +62,12 @@ pie(table(haberman$survivalStatus))
 
 plot(table(haberman$yearOfOperation,haberman$survivalStatus))
 
-par(mfrow=c(1,2))
-hist(table(haberman$age,haberman$survivalStatus)[,1])
-hist(table(haberman$age,haberman$survivalStatus)[,2])
+
+par(mfrow=c(2,2))
+hist(haberman$age[haberman$survivalStatus==1])
+hist(haberman$age[haberman$survivalStatus==2])
+plot(haberman$nodes[haberman$survivalStatus==1]~haberman$age[haberman$survivalStatus==1],type="p")
+plot(haberman$nodes[haberman$survivalStatus==2]~haberman$age[haberman$survivalStatus==2],type="p")
 ```
 
 Supprimer aberrantes
@@ -74,7 +77,7 @@ haberman<-haberman[haberman$nodes<40,]
 ```
 
 
-
+Nuveau summary
 ```{r}
 #all data
 summary(haberman)
@@ -86,6 +89,7 @@ summary(haberman[haberman$survivalStatus == 2,])
 ```
 
 
+Boxplot par survival status
 ```{r}
 
 boxplot(haberman$nodes~haberman$survivalStatus)
@@ -122,7 +126,9 @@ library('FactoMineR')
 ```
 
 ```{r}
-result<-PCA(haberman)
+result<-PCA(haberman,quali.sup = 4)
 summary(result)
+
+plot.PCA(result,axes = c(2,3), habillage=4)
 ```
 
