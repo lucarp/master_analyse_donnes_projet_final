@@ -1,31 +1,27 @@
 ---
-title: "Projet Final d'Analyse de Donées"
+title: "Projet Final d'Analyse de Données"
 output: html_notebook
 ---
+**Lucas Rodriguez Pereira - Anass Lahrech - Taha Bouziane**  
 
-# Analyse du jeu de donées: Haberman's Survival
+
+
+
+# Analyse du jeu de données: Haberman's Survival
 
 ## Introduction
 
-1. Title: Haberman's Survival Data
-  
-The dataset contains cases from a study that was conducted between 1958 and 1970 at the University of Chicago's Billings Hospital on the survival of patients who had undergone surgery for breast cancer.
-  
-5. Number of Instances: 306
-    
-6. Number of Attributes: 4 (including the class attribute)
-  
-7. Attribute Information:
-    1. Age of patient at time of operation (numerical)
-    2. Patient's year of operation (year - 1900, numerical)
-    3. Number of positive axillary nodes detected (numerical)
-    4. Survival status (class attribute)
-          1 = the patient survived 5 years or longer
-          2 = the patient died within 5 year
-  
-  8. Missing Attribute Values: None
+Nous trations le jeu de données intitulé : Haberman's Survival Data
 
-Les observations:
+Le jeu de données suivant contient des cas récoltés d'une étude menée entre 1958 et 1970 à l'hôpital Billings de l'université de Chicago sur les patiens qui ont survécu à une opération chirurgicale pour le cancer du sein.
+
+Le nombre d'observations fournies dans ce jeu de données est de 306 avec 4 variables.
+
+Le jeu de données ne contient de valeurs manquantes.
+
+Ce jeu de données nous permettra de faire une étude afin de prédire la classe, c'est-à-dire si les femmes qui ont subi une opérration pour le cancer du sein survivront au moins 5 ans après l'opération.
+
+Ci-dessous un exemple des observations du jeu de données :
 
 ```{r}
 setwd('./')
@@ -35,10 +31,12 @@ head(haberman)
 
 
 ## Les variables
+Les variables dont on dispose sont :  
+1. l'âge du patient à l'âge de l'opération (numérique)   
+2. l'année de l'opération du patient (année 1900) (numérique)   
+3. Nombre de nœuds auxiliaires positifs détectés (numérique)   
+4. Statut de survie, 1 pour un patient qui a survécu 5 ans ou plus après l'opération, 2 pour un patient qui n'a pas survécu plus de 5 ans. (binaire)
 
-- La loi de chaque variable
-- Valeurs manquantes?
-- Valeurs aberrantes?
 
 
 ```{r}
@@ -50,35 +48,36 @@ hist(haberman$survivalStatus,nclass=2, main = "Survival Status")
 ```
 
 
-### Suprimer les Aberrantes
+### Suppression des données aberrantes
 
-D'après les histogrames précedent, on se demande s'il n'ont pas des mesures aberrantes dans le nombre de nodes. Sans la connaissance ou l'aide d'un médicin, c'est impossible d'être sûr. Ainsi, il faut analiser un peut plus cette variable.
+D'après les précédents histogrammes, on se demande si le jeu de donnée ne contient pas de données aberrantes, notamment dans le nombre de nodes. Sans la connaissance ou l'aide d'un spécialiste, c'est impossible d'être sûr si ces mesures sont bien erronées. Pour ce faire, il faut analyser d'un peu plus près cette variable.
 
 ```{r}
 
 boxplot(haberman$nodes~haberman$survivalStatus)
 abline(h=30,col="red")
 ```
-La ligne rouge défine ce qu'on a consideré la frontière au dessus de laquelle les valeurs sont des points extrémes très eloignées du reste. Du coup, on a décidé de traiter ses donnéss considerés aberrantes en les supprimant, car ils ne sont que trois observations.
+La ligne rouge est ce qu'on a consideré la frontière (f=30) au-dessus de laquelle les valeurs sont des points extrêmes très éloignés du reste. Donc, on a décidé de traiter ces données considerées aberrantes en les supprimmant, car elles ne représentent que trois observations. 
 
 ```{r}
 haberman<-haberman[haberman$nodes<=30,]
 ```
 
 
-## Univariate statistics
+## Statistiques univariées
+
+La moyenne de l'âge est en général 52.46, et cela ne change pas beaucoup par rapport à la valeur du **survivalStatus**.  La moyenne de l'année de l'opération ne varie pas non plus. En revanche, le nombre de nodes varient. Sa moyenne passe de 2.598, pour ce qui ont survécu au moins 5 ans après l'opération, à 6,544 pour ce qui n'ont pas survécu. On se demande donc, quelles sont les corrélations entre les variables ?   
 
 
+#### All data
 
-### All data
 
-La moyenne de l'age est en général 52,46, et cela ne change beaucoup par rapport le **survivalStatus**. Pareil pour l'année de l'opération. Le plus intéressant nous semble le nobres de nodes. La moyanne change de 4,026 pour 2,791 pour ce qu'ont survecu au moins 5 ans après l'opération, et pour 7,457 pour ce qui n'ont pas. Du coup, on se démande quelle est la correlation entre les variables.
 ```{r}
 #all data
 summary(haberman)
 ```
 
-### Filtered by survived
+#### Filtré par les personnes qui sont mortes
 ```{r}
 
 #Survived
@@ -86,7 +85,7 @@ summary(haberman[haberman$survivalStatus == 1,])
 
 ```
 
-### Filtered by those who died
+#### Filtré par les personnes qui ont survécu
 ```{r}
 
 #Died
@@ -95,10 +94,17 @@ summary(haberman[haberman$survivalStatus == 2,])
 
 ```
 
+## Plot général
+Ce plot nous donne une idée générale sur les variables de notre jeu de donnée. Nous traiterons plus en détails dans les parties suivantes ces données.
+```{r}
+plot.PCA(result,axes = c(1,3), habillage = 4)
+pairs(haberman)
 
-## Correlation
+## Corrélation entre les variables
 
-La matrice de correlation confime les hipothèses qu'on a crée à partir des statistiques univarée. Il y a une correlation fabile (presque nulle) entre les variables. La plus expressive c'est la correlation entre le nombre de nodes et le **survivalStatus**. On l'analyse premierment.
+La matrice de corrélation confime les hypothèses qu'on a créé à partir des statistiques univarées. Il y a une corrélation faible (presque nulle) entre les variables. La plus expressive mais toujours pas très importante est la corrélation entre le nombre de nodes et le **survivalStatus**. On l'analyse premièrement. 
+
+Ci-desouss la matrice de corrélation.
 ```{r}
 
 #no strong linear correlation
@@ -106,9 +112,9 @@ cor(haberman, method = "spearman")
 
 ```
 
-## Relation entre nodes et survivalStatus
+## Relation entre nodes et statut de survie
 
-Ici on conclue que le nombre de node est importante. **Le nombre de node plus faible veut dire que le traitement a été pris plus au début du cancer ??? (on pourrais rechercher, Anass ) **
+Ici on conclue que le nombre de nodes est important. Pour les personnes qui ont survécu au moins 5 après l'opération, leurs nombre de noeuds était inférieur à 4 nodes. Tandis que les personnes qui n'ont pas survécu plus de 5 ans, leurs nombre de noeuds approchait en moyenne 13 nodes. Seulement 20% de ceux qui ont survécus avaient plus de 4 noeuds. Par contre, 50% de ceux que n'ont pas survécu avaient plus de 4 noeuds.
 
 ```{r}
 layout(matrix(c(1,2),ncol=2))
@@ -128,36 +134,43 @@ abline(h=13,v=0.8, col="red")
 
 
 
-## Relation Year vs survival Status
+## Relation entre l'âge et le statut de survie
 
-Il n'y a pas de correlation 
+Entre l'âge et le statut de survie, on ne distingue pas de corrélation. Le graphe ci-dessous nous donne une image plus visuel des gens qui ont survécu plus de 5 ans et ceux qui ont survécu moins de 5 ans par rapport à l'âge.
 
 ```{r}
 plot(table(haberman$yearOfOperation,haberman$survivalStatus))
 ```
 
-## Relation age et survivalStatus
 
-Il semble qu'il n'y a pas... Je pense qu'on ne peut rien conclure.
+
+On déduit aussi grâce aux graphes suivant qu'il n'y a pas de relation entre l'âge et le statut de survie, la matrice de corrélation faite précédément confirme cette conclusion. Les deux variables (Statut=1 et Statut=2) suivent ici une loi normale.
 ```{r}
 layout(matrix(c(1,2),ncol=2))
-hist(haberman$age[haberman$survivalStatus==1],main = "TEste")
-hist(haberman$age[haberman$survivalStatus==2],main = "Teste")
+hist(haberman$age[haberman$survivalStatus==1],main = "Statut=Yes")
+hist(haberman$age[haberman$survivalStatus==2],main = "Statut=No")
 
 ```
+       
+
+##Régression linéaire simple  
+
+En faisant une régression linéaire entre le statut de survie et le nombre de nodes.  
+On observe que la qualité du modèle est très médiocre, car il explique que 8% de la variabilité des status de survie. 
 
 
-#Regressio Linéaire
-
-Pas possible aussi!
 ```{r}
 
-summary(lm(haberman$age~haberman$nodes))
+model=lm(haberman$survivalStatus~haberman$nodes)
+summary(model)
+layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
+plot(model) 
+
 ```
 
-
-# PCA
-
+    
+## PCA
+On distingue grâce aux graphes ci-dessous, qu'auncune variable n'est corrélée avec les composantes principales. On ne peut pas donc conclure. 
 ```{r}
 
 #PCA analysis
@@ -172,7 +185,18 @@ result<-PCA(haberman, scale.unit = TRUE, quali.sup = c(4))
 #summary(result)
 ```
 
-```{r}
-plot.PCA(result,axes = c(1,3), habillage = 4)
+#Conclusion 
+
+Est ce que l'âge des patiens au moment de l'opération influence le statut de survie ?   
+
+Suite à l'analyse de ce jeu de donnée, la réponse est donc non vu l'absence de corrélation.
+
+Est-ce que le nombre de nodes auxiliaires positifs influence de le statut de survie ?    
+
+La réponse à cette question est oui, vu que dans ce jeu de données la seule variable qui corrèle positivement avec le statut de survie est le nombre de lymph nodes.  
+
+Nous avons maintenant une confirmation de notre intuition. À l'avenir, nous souhaiterons avoir l'avis d'un expert pour savoir si grâce à son expertise et les résultats obtenus, nous pouvons prédire le statut de survie. 
+
+
 ```
 
