@@ -1,6 +1,7 @@
 ---
 title: "Projet Final d'Analyse de Données"
-output: html_notebook
+output:
+  html_notebook: default
 ---
 **Lucas Rodriguez Pereira - Anass Lahrech - Taha Bouziane**  
 
@@ -94,17 +95,17 @@ summary(haberman[haberman$survivalStatus == 2,])
 
 ```
 
-## Plot général
-Ce plot nous donne une idée générale sur les variables de notre jeu de donnée. Nous traiterons plus en détails dans les parties suivantes ces données.
-```{r}
-plot.PCA(result,axes = c(1,3), habillage = 4)
-pairs(haberman)
+
+
+
+
 
 ## Corrélation entre les variables
 
 La matrice de corrélation confime les hypothèses qu'on a créé à partir des statistiques univarées. Il y a une corrélation faible (presque nulle) entre les variables. La plus expressive mais toujours pas très importante est la corrélation entre le nombre de nodes et le **survivalStatus**. On l'analyse premièrement. 
 
 Ci-desouss la matrice de corrélation.
+
 ```{r}
 
 #no strong linear correlation
@@ -173,17 +174,22 @@ plot(model)
 On distingue grâce aux graphes ci-dessous, qu'auncune variable n'est corrélée avec les composantes principales. On ne peut pas donc conclure. 
 ```{r}
 
-#PCA analysis
 
 install.packages('FactoMineR', dependencies = TRUE)
 library('FactoMineR')
 
 ```
+```{r}
 
+```
 ```{r}
 result<-PCA(haberman, scale.unit = TRUE, quali.sup = c(4))
-#summary(result)
+pairs(haberman)
 ```
+
+
+
+
 
 #Conclusion 
 
@@ -198,5 +204,5 @@ La réponse à cette question est oui, vu que dans ce jeu de données la seule v
 Nous avons maintenant une confirmation de notre intuition. À l'avenir, nous souhaiterons avoir l'avis d'un expert pour savoir si grâce à son expertise et les résultats obtenus, nous pouvons prédire le statut de survie. 
 
 
-```
+
 
