@@ -12,7 +12,7 @@ output: html_notebook
 The dataset contains cases from a study that was conducted between 1958 and 1970 at the University of Chicago's Billings Hospital on the survival of patients who had undergone surgery for breast cancer.
   
 5. Number of Instances: 306
-  
+    
 6. Number of Attributes: 4 (including the class attribute)
   
 7. Attribute Information:
@@ -95,9 +95,28 @@ summary(haberman[haberman$survivalStatus == 2,])
 ```{r}
 
 #no strong linear correlation
-cor(haberman)
+cor(haberman, method = "spearman")
 
 ```
+
+## Relation entre nodes et survivalStatus
+
+```{r}
+layout(matrix(c(1,2),ncol=2))
+survived<-function(x) {
+  return(quantile(haberman$nodes[haberman$survivalStatus == 1], probs=x))
+}
+
+not_survived<-function(x) {
+  return(quantile(haberman$nodes[haberman$survivalStatus == 2], probs=x))
+}
+
+curve(survived,from=0,to=1)
+abline(h=4,v=0.8, col="green")
+curve(not_survived,from=0,to=1)
+abline(h=13,v=0.8, col="red")
+```
+
 
 
 ## Relation Year vs survival Status
@@ -112,14 +131,6 @@ hist(haberman$age[haberman$survivalStatus==1],main = "TEste")
 hist(haberman$age[haberman$survivalStatus==2],main = "Teste")
 
 ```
-
-
-```{r}
-layout(matrix(c(1,2),ncol=2))
-hist(haberman$nodes[haberman$survivalStatus==1],main = "TEste")
-hist(haberman$nodes[haberman$survivalStatus==2],main = "Teste")
-```
-
 
 
 #Regressio Linéaire
@@ -141,11 +152,11 @@ library('FactoMineR')
 ```
 
 ```{r}
-result<-PCA(haberman, scale.unit = TRUE, quali.sup = c(2,4))
+result<-PCA(haberman, scale.unit = TRUE, quali.sup = c(4))
 #summary(result)
 ```
 
 ```{r}
-plot.PCA(result,axes = c(1,2), habillage = 4)
+plot.PCA(result,axes = c(1,3), habillage = 4)
 ```
 
