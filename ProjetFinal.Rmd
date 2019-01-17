@@ -43,32 +43,37 @@ head(haberman)
 
 ```{r}
 par(mfrow=c(2,2))
-hist(haberman$age)
-hist(haberman$yearOfOperation)
-hist(haberman$nodes)
-hist(haberman$survivalStatus,nclass=2)
+hist(haberman$age, main = "Age")
+hist(haberman$yearOfOperation, main = "Année de l'Opération")
+hist(haberman$nodes, main = "Nombre de nodes")
+hist(haberman$survivalStatus,nclass=2, main = "Survival Status")
 ```
 
 
 ### Suprimer les Aberrantes
 
-La ligne rouge défine ce qu'on a consideré la frontière pour les valeurs aberrantes.
+D'après les histogrames précedent, on se demande s'il n'ont pas des mesures aberrantes dans le nombre de nodes. Sans la connaissance ou l'aide d'un médicin, c'est impossible d'être sûr. Ainsi, il faut analiser un peut plus cette variable.
 
 ```{r}
 
 boxplot(haberman$nodes~haberman$survivalStatus)
 abline(h=30,col="red")
+```
+La ligne rouge défine ce qu'on a consideré la frontière au dessus de laquelle les valeurs sont des points extrémes très eloignées du reste. Du coup, on a décidé de traiter ses donnéss considerés aberrantes en les supprimant, car ils ne sont que trois observations.
 
-haberman<-haberman[haberman$nodes>30,]
-
+```{r}
+haberman<-haberman[haberman$nodes<=30,]
 ```
 
 
 ## Univariate statistics
 
-### All data
-```{r}
 
+
+### All data
+
+La moyenne de l'age est en général 52,46, et cela ne change beaucoup par rapport le **survivalStatus**. Pareil pour l'année de l'opération. Le plus intéressant nous semble le nobres de nodes. La moyanne change de 4,026 pour 2,791 pour ce qu'ont survecu au moins 5 ans après l'opération, et pour 7,457 pour ce qui n'ont pas. Du coup, on se démande quelle est la correlation entre les variables.
+```{r}
 #all data
 summary(haberman)
 ```
@@ -92,6 +97,8 @@ summary(haberman[haberman$survivalStatus == 2,])
 
 
 ## Correlation
+
+La matrice de correlation confime les hipothèses qu'on a crée à partir des statistiques univarée. Il y a une correlation fabile (presque nulle) entre les variables. La plus expressive c'est la correlation entre le nombre de nodes et le **survivalStatus**. On l'analyse premierment.
 ```{r}
 
 #no strong linear correlation
@@ -100,6 +107,8 @@ cor(haberman, method = "spearman")
 ```
 
 ## Relation entre nodes et survivalStatus
+
+Ici on conclue que le nombre de node est importante. **Le nombre de node plus faible veut dire que le traitement a été pris plus au début du cancer ??? (on pourrais rechercher, Anass ) **
 
 ```{r}
 layout(matrix(c(1,2),ncol=2))
@@ -120,11 +129,16 @@ abline(h=13,v=0.8, col="red")
 
 
 ## Relation Year vs survival Status
+
+Il n'y a pas de correlation 
+
 ```{r}
 plot(table(haberman$yearOfOperation,haberman$survivalStatus))
 ```
 
 ## Relation age et survivalStatus
+
+Il semble qu'il n'y a pas... Je pense qu'on ne peut rien conclure.
 ```{r}
 layout(matrix(c(1,2),ncol=2))
 hist(haberman$age[haberman$survivalStatus==1],main = "TEste")
@@ -134,6 +148,8 @@ hist(haberman$age[haberman$survivalStatus==2],main = "Teste")
 
 
 #Regressio Linéaire
+
+Pas possible aussi!
 ```{r}
 
 summary(lm(haberman$age~haberman$nodes))
