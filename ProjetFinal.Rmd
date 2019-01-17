@@ -2,6 +2,9 @@
 title: "Projet Final d'Analyse de Données"
 output:
   html_notebook: default
+  html_document:
+    df_print: paged
+  pdf_document: default
 ---
 **Lucas Rodriguez Pereira - Anass Lahrech - Taha Bouziane**  
 
@@ -110,8 +113,16 @@ Ci-desouss la matrice de corrélation.
 
 #no strong linear correlation
 cor(haberman, method = "spearman")
-
 ```
+
+```{r}
+
+colors<-rep("black",nrow(haberman))
+colors[haberman$survivalStatus == 1] <- "grey"
+colors[haberman$survivalStatus == 2] <- "red"
+pairs(haberman, col=colors)
+```
+
 
 ## Relation entre nodes et statut de survie
 
@@ -130,7 +141,7 @@ not_survived<-function(x) {
 curve(survived,from=0,to=1)
 abline(h=4,v=0.8, col="green")
 curve(not_survived,from=0,to=1)
-abline(h=13,v=0.8, col="red")
+abline(h=4,v=0.5, col="red")
 ```
 
 
@@ -179,12 +190,12 @@ install.packages('FactoMineR', dependencies = TRUE)
 library('FactoMineR')
 
 ```
-```{r}
 
-```
+
+
 ```{r}
 result<-PCA(haberman, scale.unit = TRUE, quali.sup = c(4))
-pairs(haberman)
+
 ```
 
 
